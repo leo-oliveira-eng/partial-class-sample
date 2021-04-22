@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Label="FineCodeCoverage">
+  	<Enabled>true</Enabled>
+		  <Exclude>
+			  [*]PartialClassSample.Api.Tests.*
+			  [*]PartialClassSample.Api.Controllers.*
+			  [*]PartialClassSample.Api.Data.*
+			  [*]PartialClassSample.Api.Tests.*
+		  </Exclude>
+		  <Include>
+			  [*]*
+		  </Include>
+		  <ExcludeByFile>
+			  **/Program.cs
+			  **/Startup.cs
+		  </ExcludeByFile>
+		  <ExcludeByAttribute>
+			  ExcludeFromCodeCoverage
+		  </ExcludeByAttribute>
+		  <IncludeTestAssembly>
+			  True
+		  </IncludeTestAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="NBuilder" Version="6.1.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.3.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PartialClassSample.Api\PartialClassSample.Api.csproj" />
+  </ItemGroup>
+
+</Project>
