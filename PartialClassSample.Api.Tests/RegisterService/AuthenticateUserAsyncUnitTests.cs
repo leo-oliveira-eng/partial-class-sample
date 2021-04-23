@@ -2,11 +2,8 @@
 using Messages.Core;
 using Messages.Core.Enums;
 using Moq;
+using PartialClassSample.Api.Messages.RequestMessage;
 using PartialClassSample.Api.Messages.ResponseMessage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -23,14 +20,14 @@ namespace PartialClassSample.Api.Tests.RegisterService
         public async Task AuthenticateAsync_ShouldReturnBusinessError_PasswordIsEmpty()
         {
             _registerRepository.Setup(_ => _.FindAsync(It.IsAny<string>()));
-            var email = "none@nothing.com";
+            var requestMessage = AuthenticateUserRequestMessageFake(password: string.Empty);
 
-            var response = await RegisterService.AuthenticateUserAsync(email, string.Empty);
+            var response = await RegisterService.AuthenticateUserAsync(requestMessage);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
             response.Messages.Should().HaveCount(1);
-            response.Messages.Should().Contain(message => message.Property.Equals("password"));
+            response.Messages.Should().Contain(message => message.Property.Equals("Password"));
             response.Data.HasValue.Should().BeFalse();
             response.Data.Value.Should().BeNull();
             _registerRepository.Verify(_ => _.AddAsync(It.IsAny<Models.Register>()), Times.Never);
@@ -44,14 +41,14 @@ namespace PartialClassSample.Api.Tests.RegisterService
                 .ReturnsAsync(Maybe<Models.Register>.Create())
                 .Verifiable();
 
-            var email = "none@nothing.com";
+            var requestMessage = AuthenticateUserRequestMessageFake();
 
-            var response = await RegisterService.AuthenticateUserAsync(email, "1234");
+            var response = await RegisterService.AuthenticateUserAsync(requestMessage);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
             response.Messages.Should().HaveCount(1);
-            response.Messages.Should().Contain(message => message.Property.Equals("email"));
+            response.Messages.Should().Contain(message => message.Property.Equals("Email"));
             response.Data.HasValue.Should().BeFalse();
             response.Data.Value.Should().BeNull();
             _registerRepository.Verify();
@@ -65,9 +62,9 @@ namespace PartialClassSample.Api.Tests.RegisterService
                 .ReturnsAsync(Maybe<Models.Register>.Create(RegisterFake()))
                 .Verifiable();
 
-            var email = "none@nothing.com";
+            var requestMessage = AuthenticateUserRequestMessageFake(password: "abc123");
 
-            var response = await RegisterService.AuthenticateUserAsync(email, "abc123");
+            var response = await RegisterService.AuthenticateUserAsync(requestMessage);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -86,9 +83,9 @@ namespace PartialClassSample.Api.Tests.RegisterService
                 .ReturnsAsync(Maybe<Models.Register>.Create(RegisterFake()))
                 .Verifiable();
 
-            var email = "none@nothing.com";
+            var requestMessage = AuthenticateUserRequestMessageFake();
 
-            var response = await RegisterService.AuthenticateUserAsync(email, "1234");
+            var response = await RegisterService.AuthenticateUserAsync(requestMessage);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeFalse();

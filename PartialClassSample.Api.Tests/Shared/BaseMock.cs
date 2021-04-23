@@ -25,5 +25,12 @@ namespace PartialClassSample.Api.Tests.Shared
                 .With(_ => _.Password, passWord ?? "1234")
                 .With(_ => _.PasswordConfirmation, confirmationPassword ?? "1234")
                 .Build();
+
+        public AuthenticateUserRequestMessage AuthenticateUserRequestMessageFake(string email = null, string password = null)
+            => new AuthenticateUserRequestMessage
+            {
+                Email = email ?? "any@nothing.com",
+                Password = password ?? "1234"
+            };
     }
 }

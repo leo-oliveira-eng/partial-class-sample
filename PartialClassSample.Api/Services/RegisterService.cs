@@ -44,19 +44,19 @@ namespace PartialClassSample.Api.Services
             return createRegisterResponse.Data.Value.ToRegisterResponseMessage();
         }
 
-        public async Task<Response<RegisterResponseMessage>> AuthenticateUserAsync(string email, string password)
+        public async Task<Response<RegisterResponseMessage>> AuthenticateUserAsync(AuthenticateUserRequestMessage requestMessage)
         {
             var response = Response<RegisterResponseMessage>.Create();
 
-            if (string.IsNullOrEmpty(password))
-                return response.WithBusinessError(nameof(password), $"{nameof(password)} is required");
+            if (string.IsNullOrEmpty(requestMessage.Password))
+                return response.WithBusinessError(nameof(requestMessage.Password), $"{nameof(requestMessage.Password)} is required");
 
-            var register = await RegisterRepository.FindAsync(email);
+            var register = await RegisterRepository.FindAsync(requestMessage.Email);
 
             if (!register.HasValue)
-                return response.WithBusinessError(nameof(email), $"Email {email} not found");
+                return response.WithBusinessError(nameof(requestMessage.Email), $"Email {requestMessage.Email} not found");
 
-            if (!register.Value.PasswordIsValid(password))
+            if (!register.Value.PasswordIsValid(requestMessage.Password))
                 return response.WithBusinessError("Authentication failed");
 
             return register.Value.ToRegisterResponseMessage();

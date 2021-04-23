@@ -28,9 +28,7 @@ namespace PartialClassSample.Api.Data
             {
                 entity.ToTable("Register");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)

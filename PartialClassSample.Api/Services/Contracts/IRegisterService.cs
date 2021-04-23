@@ -9,6 +9,6 @@ namespace PartialClassSample.Api.Services.Contracts
     {
         Task<Response<RegisterResponseMessage>> CreateRegisterAsync(CreateRegisterRequestMessage requestMessage);
 
-        Task<Response<RegisterResponseMessage>> AuthenticateUserAsync(string email, string password);
+        Task<Response<RegisterResponseMessage>> AuthenticateUserAsync(AuthenticateUserRequestMessage requestMessage);
     }
 }
