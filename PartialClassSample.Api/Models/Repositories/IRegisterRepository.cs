@@ -8,7 +8,7 @@ namespace PartialClassSample.Api.Models.Repositories
     {
         Task<List<Register>> GetAllAsync();
 
-        Task<Maybe<Register>> FindAsync(int id);
+        Task<Maybe<Register>> FindAsync(string email);
 
         Task AddAsync(Register register);
     }

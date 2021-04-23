@@ -1,3 +1,5 @@
+using BaseEntity.Domain.UnitOfWork;
+using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +11,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PartialClassSample.Api.Data;
+using PartialClassSample.Api.Models.Repositories;
+using PartialClassSample.Api.Services;
+using PartialClassSample.Api.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -37,6 +42,12 @@ namespace PartialClassSample.Api
             });
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Me")));
+
+            services.AddTransient<IRegisterRepository, RegisterRepository>();
+
+            services.AddTransient<IRegisterService, RegisterService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork<UserContext>>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

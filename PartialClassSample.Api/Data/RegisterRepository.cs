@@ -18,8 +18,8 @@ namespace PartialClassSample.Api.Data
         public Task<List<Register>> GetAllAsync()
             => DbSet.ToListAsync();
 
-        public async Task<Maybe<Register>> FindAsync(int id)
-            => await DbSet.SingleOrDefaultAsync(register => register.Id == id);
+        public async Task<Maybe<Register>> FindAsync(string email)
+            => await DbSet.SingleOrDefaultAsync(register => register.Email == email);
 
         public Task AddAsync(Register register)
         {

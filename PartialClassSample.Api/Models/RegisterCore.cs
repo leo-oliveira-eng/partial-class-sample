@@ -57,5 +57,12 @@ namespace PartialClassSample.Api.Models
 
             return response;
         }
+
+        public bool PasswordIsValid(string password)
+            => password.Encrypt().Equals(PassWord);
+
+        public static implicit operator Register(Maybe<Register> entity) => entity.Value;
+
+        public static implicit operator Register(Response<Register> entity) => entity.Data;
     }
 }
