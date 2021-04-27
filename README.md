@@ -1,23 +1,23 @@
-# partial-class-sample
+# partial-class-sample [![.NET](https://github.com/leo-oliveira-eng/partial-class-sample/actions/workflows/dotnet.yml/badge.svg)](https://github.com/leo-oliveira-eng/partial-class-sample/actions/workflows/dotnet.yml) [![License](https://img.shields.io/badge/license-MIT-blue.svg)] [![CodeQL](https://github.com/leo-oliveira-eng/partial-class-sample/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/leo-oliveira-eng/partial-class-sample/actions/workflows/codeql-analysis.yml)
 
-The purpose of this repository is to create an example for an implementation using Partial Classes. C # allows definitions of classes, strucs and interfaces to be split into more than one file. The compiler groups these files and generates a single entity. What would I want that for? Well, there are some situations where this is desirable. One of them is when we work with code generated automatically and dynamically by some tool, which is what we intend to do in this example using the Database First approach.
+The purpose of this repository is to create an example for an implementation using Partial Classes. C # allows definitions of classes, structs and interfaces to be split into more than one file. The compiler groups these files and generates a single entity. What would I want that for? Well, there are some situations where this is desirable. One of them is when we work with code generated automatically and dynamically by some tool, which is what we intend to do here using the Database First approach.
 
-This methodology allows an existing database to be used as a basis for creation of the model classes of an application.
-For the project scaffold we can use the CLI extension of the dotnet core for Entity Framework (EF). Dotnet-ef is capable of creating and applying migrations and, in our case, it is capable of generating the code for context and models from the existing tables from an existing database.
+This methodology allows an existing database to be used as a basis for creation of the model classes for an application.
+For the project scaffold we can use the CLI extension of the dotnet core for Entity Framework (EF). Dotnet-ef is capable of creating and applying migrations and, in our case, generate the code for context and models from the existing tables from a database.
 
 Without further, let's get down to business.
 
-This example was thought of as follows: From a user registration table we will build an API that inserts new users and make a request to validate a user's login. This login request sends the registered email and password to be verified. In the user registration, the password is recorded as an encrypted string just just to avoid it is not exposed directly in database table (please do not do this in real applications, there are much better solutions for this).
+This example was thought of as follows: From a user registration table we will build an API that inserts new users and make a request to validate a user's login. This login request sends the registered email and password to be verified. In the user registration, the password is recorded as an encrypted string just to avoid expose it directly in database table (please do not do this in real applications, there are much better solutions for this).
 
 ## Step 0
-First of all, let's install dotnet-ef. The installation can be carried out locally or globally. For global installation use the command below:
+First of all, let's install dotnet-ef. It can be carried out locally or globally. For global installation use the command below:
 
 CLI do .NET Core
 ```
 dotnet tool install --global dotnet-ef
 ```
 
-If you have previously installed it, could be valid to update it. If so, use the command below:
+If you have installed it previously, could be valid to update it. If so, use the command below:
 
 CLI do .NET Core
 ```
@@ -27,7 +27,7 @@ dotnet tool update --global dotnet-ef
 If you need more information, see the official documentation [here](https://docs.microsoft.com/pt-br/ef/core/cli/dotnet).
 
 ## Step 1
-As we are going to use Database First, initially we are going to create our database with our table of records. Below is the script used to create this database on SQL Server.
+As we are going to use Database First, initially we are going to create our database with our table of records. The script used to create this database example(SQL Server) is shown below.
 
 ```sql
 CREATE DATABASE Users;
@@ -36,35 +36,35 @@ CREATE TABLE Register (
     ID INT IDENTITY,
     LastName VARCHAR(255) NOT NULL,
     FirstName VARCHAR(255),
-	Email VARCHAR(100),
+    Email VARCHAR(100),
     PassWord VARCHAR(max),
     CONSTRAINT PK_Register PRIMARY KEY (ID)
 );
 ```
 
 ## Step 2
-Now that we have our reference database, we can create our repository on github, adding the Visual Studio gitignore and a license file. Of course, all of this is optional.
-We then started to create the basic structure of the project adding the solution and the API project.
+After create our reference database, we can create our repository on github, adding the Visual Studio gitignore and a license file. That is optional.
+Now the basic structure of the project can be created adding the solution and the API project.
 
 ## Step 3
-With the standing project, we used dotnet-ef to scaffold the tables in our database into our project. For this task we use the command below:
+With the standing project, dotnet-ef can scaffold the tables in our database into our project. For this task, use the command below:
 
 CLI do .NET Core
 ```
 dotnet-ef dbcontext scaffold <CONNECTION> <PROVIDER>
 ```
-The connetion argument receives the database connection string and the provider receives the name of the corresponding Nuget package of database type used, in our case: Microsoft.EntityFrameworkCore.SqlServer.
+The connetion argument receives the database connection string and the provider receives the name of Nuget package according to database type used, in this case: Microsoft.EntityFrameworkCore.SqlServer.
 
-There are several options for customize EF scaffold. In the case of our project we use the options: -o to define the name of the folder where the models are created, --context-dir to define the folder where the context was created, -c to define the name of our context, --no-onconfiguring to suppress the creation of the OnConfiguring method in DbContext and the --force option to ensure that classes are overwritten when the command is executed. In our project, DbContext was configured in Startup.ConfigureServices. In practice, the command for creating and updating the scaffold is as follows:
+There are several options for customize EF scaffold. Here we used the options: -o to define the name of the folder where the models are created, --context-dir to define the folder where the context was created, -c to define the name of our context, --no-onconfiguring to suppress the creation of the OnConfiguring override method in DbContext and the --force option to ensure that classes are overwritten when the command is executed. DbContext was configured in Startup.ConfigureServices. In practice, the command for creating and updating the scaffold is as follows:
 
 CLI do .NET Core
 ```
 dotnet-ef dbcontext scaffold "Server=127.0.0.1, 1433;Database=Users;User Id=sa;Password=anyP@ssw0rd;" Microsoft.EntityFrameworkCore.SqlServer -o Models --context-dir Data -c UserContext --no-onconfiguring --force
 ```
 
-After executing this command, we have a partial class Register, with the properties corresponding to the Register table of the Users database and a partial class UserContext, with the mapping of this class for database operation.
+After executing this command, we have a partial class Register, with properties corresponding to the Register table of the Users database and a partial class UserContext, with the mapping of this class for database operation.
 
-For inclusion of methods that assign the behavior of Register class, we use another partial class with the same name (Register) recorded in the RegisterCore.cs file. If we had used the same auto file generated by EF, this added information would be lost in case the table is updated and we run dotnet-ef again because --force option is selected. If this option is removed, we would have to manually remove all files generated by EF's reverse engineering before running the command, which would not help us. Therefore, for this case, the use of this C# resource is justified.
+To include methods that assign the behavior of Register class, we use another partial class with the same name (Register) recorded in RegisterCore.cs file. If we had used the same auto file generated by EF, this added information would be lost in case of table is updated and we run dotnet-ef again because --force option is selected. If this option is removed, we would have to manually remove all files generated by EF's reverse engineering before running the command, which would not help us. Therefore, justifying the use of this C# resource.
 
 ## Step 4
 Finally, the rest of the API implementations were carried out (in a very basic way for this example) as well as the unit tests relevant to the project's business rules.
